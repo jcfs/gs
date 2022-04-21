@@ -5813,6 +5813,7 @@ var PortNames = map[int]string{
 	49000:       "matahari",
 	49001:       "nusrp",
 	49150:       "inspider",
+	49152:       "unknown",
 }
 
 func GetCommonPorts() []int {

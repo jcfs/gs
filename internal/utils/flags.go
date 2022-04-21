@@ -21,6 +21,10 @@ type Flags struct {
 	Port      []int
 }
 
+func (c Flags) String() string {
+	return fmt.Sprintf("[%v %v %v %v %v %v]", c.Type, c.Verbose, c.Domain, c.Subdomain, c.WordList, c.Port)
+}
+
 func Parse(args []string) Flags {
 	var result Flags
 
@@ -56,13 +60,15 @@ func parseArg[T any](args []string, names []string, keyValue bool, ref *T, extra
 			}
 
 			trim := TrimPrefix(a, prefix)
-			if n == trim {
-				var value, found = "", false
-				if _, value, found = strings.Cut(trim, separator); !found {
-					if keyValue {
-						value = args[i+1]
-					}
+			if cut, v, found := strings.Cut(trim, separator); cut == n {
+				var value string
+
+				if found {
+					value = v
+				} else if keyValue {
+					value = args[i+1]
 				}
+
 				*ref = extract(value)
 			}
 		}

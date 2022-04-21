@@ -24,8 +24,6 @@ func (scanner *PortScanner) Scan(flags utils.Flags, wg *sync.WaitGroup) {
 	wg.Add(1)
 
 	ch := utils.Chunks(flags.Port, 75)
-	fmt.Printf("%7s%12s%20s\n", "Port", "Status", "Service")
-
 	result := make(chan Result)
 
 	go Print(result)
@@ -90,6 +88,7 @@ func rawConnect(host string, port int, result chan Result) {
 }
 
 func Print(result chan Result) {
+	fmt.Printf("%7s%12s%20s\n", "Port", "Status", "Service")
 	for r := range result {
 		fmt.Printf("%7d\033[32m%12s\033[0m%20s\n", r.port, r.status, utils.GetPortDescription(r.port))
 	}
