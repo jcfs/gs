@@ -5816,6 +5816,12 @@ var PortNames = map[int]string{
 	49152:       "unknown",
 }
 
+const (
+	Open     string = "open"
+	Closed          = "closed"
+	Filtered        = "filtered"
+)
+
 func GetCommonPorts() []int {
 	var result []int
 	for k := range PortNames {

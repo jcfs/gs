@@ -6,14 +6,11 @@ import (
 	"net"
 	"os"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 )
 
 type PortScanner struct{}
-
-var chwg sync.WaitGroup
 
 type Result struct {
 	port   int
@@ -21,68 +18,42 @@ type Result struct {
 }
 
 func (scanner *PortScanner) Scan(flags utils.Flags, wg *sync.WaitGroup) {
-	wg.Add(1)
+	var chwg sync.WaitGroup
 
-	ch := utils.Chunks(flags.Port, 75)
+	ch := utils.Chunks(flags.Port, 250)
 	result := make(chan Result)
 	done := make(chan int)
 
 	go output(result, done, wg)
 	for _, chunk := range ch {
 		for _, port := range chunk {
-			rawConnect(flags.Domain, port, result)
+			rawConnect(flags.Domain, port, result, &chwg)
 		}
 		chwg.Wait()
 	}
 
 	done <- 1
-	wg.Done()
 }
 
-func rawConnect(host string, port int, result chan Result) {
+func rawConnect(host string, port int, result chan Result, chwg *sync.WaitGroup) {
 	chwg.Add(1)
-	var timeoutTCP = time.Duration(100) * time.Millisecond
 	go func() {
-		d := net.Dialer{Timeout: timeoutTCP}
-		_, err := d.Dial("tcp", host+":"+strconv.Itoa(port))
-		if err != nil {
+		d := net.Dialer{Timeout: time.Duration(150) * time.Millisecond}
+		if _, err := d.Dial("tcp", host+":"+strconv.Itoa(port)); err != nil {
 			if addErr, ok := err.(*net.AddrError); ok {
 				if addErr.Timeout() {
 					chwg.Done()
 					return
-
 				}
-			} else if addErr, ok := err.(*net.OpError); ok {
-				// handle lacked sufficient buffer space error
-				if strings.TrimSpace(addErr.Err.Error()) == "bind: An operation on a socket could not be performed because "+
-					"the system lacked sufficient buffer space or because a queue was full." {
-
-					time.Sleep(timeoutTCP + (3000 * time.Millisecond))
-
-					_, errAe := d.Dial("tcp", host+":"+strconv.Itoa(port))
-
-					if errAe != nil {
-						if addErr, ok := err.(*net.AddrError); ok {
-							if addErr.Timeout() {
-								chwg.Done()
-								return
-
-							}
-						}
-					}
-				}
-
 			} else {
-				println(err.Error())
+				fmt.Println(err.Error())
 				os.Exit(1)
-
 			}
 			chwg.Done()
 			return
-
 		}
 
-		result <- Result{port: port, status: "OPEN"}
+		result <- Result{port: port, status: utils.Open}
 		chwg.Done()
 	}()
 }
