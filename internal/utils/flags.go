@@ -44,8 +44,7 @@ func Parse(args []string) Flags {
 	parseArg(args, []string{"port", "p"}, true, &result.Port, parseScanPortFlags, GetCommonPorts())
 	parseArg(args, []string{"format", "f"}, true, &result.Format, extractString, "text")
 
-	// assume the last element of the args list if always the domain
-
+	// assume the last element of the args list is always the domain
 	if len(args) > 0 {
 		result.Domain = args[len(args)-1]
 	}
@@ -79,34 +78,29 @@ func parseArg[T any](args []string, names []string, keyValue bool, ref *T, extra
 
 //
 func parseScanPortFlags(ports string) []int {
-	// check if it is a single port
-	if port, err := strconv.Atoi(ports); err == nil {
-		return []int{port}
-	}
+	var portSlice []int
 
-	// check if comma separated
-	if strings.Contains(ports, ",") {
-		var portSlice []int
-		for _, i := range strings.Split(ports, ",") {
-			port, err := strconv.Atoi(i)
+	for _, s := range strings.Split(ports, ",") {
+		if lower, upper, found := strings.Cut(s, "-"); found {
+			l, err := strconv.Atoi(lower)
 			if err != nil {
 				continue
 			}
-			portSlice = append(portSlice, port)
+			u, err := strconv.Atoi(upper)
+			if err != nil {
+				continue
+			}
+			for i := l; i <= u; i++ {
+				portSlice = append(portSlice, i)
+			}
+		} else {
+			v, err := strconv.Atoi(s)
+			if err != nil {
+				continue
+			}
+			portSlice = append(portSlice, v)
 		}
-		return portSlice
 	}
 
-	// parse %d-%d format ie, 1-100 and expand it to 1,2,3...100
-	upper, lower := 0, 0
-	if _, err := fmt.Sscanf(ports, "%d-%d", &lower, &upper); err == nil {
-		var portSlice []int
-		for i := lower; i <= upper; i++ {
-			portSlice = append(portSlice, i)
-		}
-		return portSlice
-	}
-
-	return nil
-
+	return portSlice
 }
