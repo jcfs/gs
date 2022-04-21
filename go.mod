@@ -1,3 +1,3 @@
-module github.com/jcfs/gs
+module gs
 
 go 1.18

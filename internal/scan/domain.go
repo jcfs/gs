@@ -3,8 +3,8 @@ package scan
 import (
 	"bufio"
 	"context"
-	"coscanner/internal"
 	"fmt"
+	"gs/internal/utils"
 	"log"
 	"net"
 	"os"
@@ -14,7 +14,7 @@ import (
 
 type DomainScanner struct{}
 
-func (scanner *DomainScanner) Scan(flags internal.Flags, wg sync.WaitGroup) {
+func (scanner *DomainScanner) Scan(flags utils.Flags, wg *sync.WaitGroup) {
 	if flags.WordList != "" {
 		if file, err := os.Open(flags.WordList); err == nil {
 			defer file.Close()
@@ -35,7 +35,7 @@ func (scanner *DomainScanner) Scan(flags internal.Flags, wg sync.WaitGroup) {
 	}
 }
 
-func resolve(subdomain string, addr string, printerr bool, wg sync.WaitGroup) {
+func resolve(subdomain string, addr string, printerr bool, wg *sync.WaitGroup) {
 	wg.Add(1)
 	go func() {
 		domain := fmt.Sprintf("%s.%s", subdomain, addr)

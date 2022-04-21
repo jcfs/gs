@@ -1,8 +1,7 @@
-package internal
+package utils
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -22,8 +21,7 @@ type Flags struct {
 	Port      []int
 }
 
-func Parse() Flags {
-	args := os.Args[1:]
+func Parse(args []string) Flags {
 	var result Flags
 
 	extractString := func(s string) string {
@@ -71,6 +69,7 @@ func parseArg[T any](args []string, names []string, keyValue bool, ref *T, extra
 	}
 }
 
+//
 func parseScanPortFlags(ports string) []int {
 	// check if it is a single port
 	if port, err := strconv.Atoi(ports); err == nil {

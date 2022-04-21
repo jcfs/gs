@@ -1,5 +1,5 @@
 build:
-	go build -o bin/gs pkg/*.go
+	cd cmd/gs/; go build -o ../../bin/gs .
 
 run:
 	go run coscanner/pkg

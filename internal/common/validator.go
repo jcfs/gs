@@ -1,9 +1,10 @@
-package internal
+package common
 
 import (
-	"coscanner/internal/scan"
 	"errors"
 	"fmt"
+	"gs/internal/scan"
+	"gs/internal/utils"
 )
 
 const usage = `
@@ -19,7 +20,7 @@ PORT:
 
 `
 
-func Validate(flags Flags) error {
+func Validate(flags utils.Flags) error {
 	if err := validateFlags(flags); err != nil {
 		fmt.Print(usage)
 		fmt.Println(err)
@@ -30,17 +31,17 @@ func Validate(flags Flags) error {
 }
 
 //validateScan validates the scan configuration for each scan type
-func validateFlags(flags Flags) error {
+func validateFlags(flags utils.Flags) error {
 	if flags.Domain == "" {
 		return errors.New("domain must be present")
 	}
 
 	switch flags.Type {
-	case scan.ScanTypePort:
+	case scan.TypePort:
 		if len(flags.Port) == 0 {
 			return errors.New("missing -p/--port option")
 		}
-	case scan.ScanTypeDomain:
+	case scan.TypeDomain:
 		if flags.Subdomain == "" && flags.WordList == "" {
 			return errors.New("missing -w/--wordlist or -s/--subdomain option")
 		}

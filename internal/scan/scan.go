@@ -1,26 +1,26 @@
 package scan
 
 import (
-	"coscanner/internal"
+	"gs/internal/utils"
 	"sync"
 )
 
 const (
-	ScanTypePort   string = "port"
-	ScanTypeDomain string = "domain"
+	TypePort   string = "port"
+	TypeDomain string = "domain"
 )
 
 var scannerMap = map[string]Scanner{
-	ScanTypePort:   &PortScanner{},
-	ScanTypeDomain: &DomainScanner{},
+	TypePort:   &PortScanner{},
+	TypeDomain: &DomainScanner{},
 }
 
 type Scanner interface {
-	Scan(flags internal.Flags, wg sync.WaitGroup)
+	Scan(flags utils.Flags, wg *sync.WaitGroup)
 }
 
 // NewScanner Creates a new scan based on the command line flags
-func NewScanner(flags internal.Flags) Scanner {
+func NewScanner(flags utils.Flags) Scanner {
 	if scanner, found := scannerMap[flags.Type]; found {
 		return scanner
 	}

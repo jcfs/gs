@@ -1,4 +1,4 @@
-package internal
+package utils
 
 //Chunks splits the xs slice into a slice of slices sized chunkSize
 func Chunks(xs []int, chunkSize int) [][]int {

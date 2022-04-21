@@ -1,4 +1,4 @@
-package internal
+package utils
 
 var PortNames = map[int]string{
 	1:           "tcpmux",
