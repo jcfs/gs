@@ -31,5 +31,5 @@ func main() {
 	scanner.Scan(flags, &wg)
 	wg.Wait()
 	elapsed := time.Since(start)
-	fmt.Printf("\n< Stopped scanning - %v\n", elapsed)
+	fmt.Printf("\n< Stopped scanning [%v]\n", elapsed)
 }

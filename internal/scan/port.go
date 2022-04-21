@@ -25,8 +25,9 @@ func (scanner *PortScanner) Scan(flags utils.Flags, wg *sync.WaitGroup) {
 
 	ch := utils.Chunks(flags.Port, 75)
 	result := make(chan Result)
+	done := make(chan int)
 
-	go Print(result)
+	go output(result, done, wg)
 	for _, chunk := range ch {
 		for _, port := range chunk {
 			rawConnect(flags.Domain, port, result)
@@ -34,14 +35,13 @@ func (scanner *PortScanner) Scan(flags utils.Flags, wg *sync.WaitGroup) {
 		chwg.Wait()
 	}
 
+	done <- 1
 	wg.Done()
 }
 
-var timeoutTCP time.Duration
-
 func rawConnect(host string, port int, result chan Result) {
 	chwg.Add(1)
-	timeoutTCP = time.Duration(100) * time.Millisecond
+	var timeoutTCP = time.Duration(100) * time.Millisecond
 	go func() {
 		d := net.Dialer{Timeout: timeoutTCP}
 		_, err := d.Dial("tcp", host+":"+strconv.Itoa(port))
@@ -87,9 +87,16 @@ func rawConnect(host string, port int, result chan Result) {
 	}()
 }
 
-func Print(result chan Result) {
+func output(result chan Result, done chan int, wg *sync.WaitGroup) {
+	wg.Add(1)
 	fmt.Printf("%7s%12s%20s\n", "Port", "Status", "Service")
-	for r := range result {
-		fmt.Printf("%7d\033[32m%12s\033[0m%20s\n", r.port, r.status, utils.GetPortDescription(r.port))
+	for {
+		select {
+		case r := <-result:
+			fmt.Printf("%7d\033[32m%12s\033[0m%20s\n", r.port, r.status, utils.GetPortDescription(r.port))
+		case <-done:
+			wg.Done()
+			return
+		}
 	}
 }
