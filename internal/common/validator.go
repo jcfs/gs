@@ -11,7 +11,7 @@ const usage = `
 Usage: gs [options...] <domain>
  -t, --type      <type>  The scan type (domain, port, ...)
  -v, --verbose           Show more information while scanning
- -f, --format    <type>  Report output format (text, json)
+ -f, --format    <type>  Report output format (text, json, xml)
  -o, --output    <file>  Write output to file
 DOMAIN:
  -s, --subdomain <data>  The subdomain to test (ie: www,ns1,cloud)
