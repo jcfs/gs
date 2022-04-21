@@ -18,11 +18,12 @@ type Flags struct {
 	Domain    string
 	Subdomain string
 	WordList  string
+	Format    string
 	Port      []int
 }
 
 func (c Flags) String() string {
-	return fmt.Sprintf("[%v %v %v %v %v %v]", c.Type, c.Verbose, c.Domain, c.Subdomain, c.WordList, c.Port)
+	return fmt.Sprintf("[%v %v %v %v %v %v %v]", c.Type, c.Verbose, c.Domain, c.Subdomain, c.WordList, c.Format, c.Port)
 }
 
 func Parse(args []string) Flags {
@@ -41,6 +42,7 @@ func Parse(args []string) Flags {
 	parseArg(args, []string{"subdomain", "s"}, true, &result.Subdomain, extractString, "")
 	parseArg(args, []string{"wordlist", "w"}, true, &result.WordList, extractString, "")
 	parseArg(args, []string{"port", "p"}, true, &result.Port, parseScanPortFlags, GetCommonPorts())
+	parseArg(args, []string{"format", "f"}, true, &result.Format, extractString, "text")
 
 	// assume the last element of the args list if always the domain
 

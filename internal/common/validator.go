@@ -9,14 +9,15 @@ import (
 
 const usage = `
 Usage: gs [options...] <domain>
- -t, --type <type>      The scan type (domain, port, ...)
- -v, --verbose          Also print unresolvable domains
- -o, --output <file>    Write output to file
+ -t, --type      <type>  The scan type (domain, port, ...)
+ -v, --verbose           Show more information while scanning
+ -f, --format    <type>  Report output format (text, json)
+ -o, --output    <file>  Write output to file
 DOMAIN:
- -s, --subdomain <data> The subdomain to test (ie: www,ns1,cloud)
- -w, --wordlist <file>  The word list to use
+ -s, --subdomain <data>  The subdomain to test (ie: www,ns1,cloud)
+ -w, --wordlist  <file>  The word list to use
 PORT:
- -p, --port <ports>     The port(s) to scan (ex: "1", "1-10", "1,2,3")
+ -p, --port      <ports> The port(s) to scan (ex: "1", "1-10", "1,2,3")
 
 `
 

@@ -10,14 +10,14 @@ func TestParse(t *testing.T) {
 		a []string
 		f Flags
 	}{
-		{[]string{"-t", "domain", "-p", "1", "google.pt"}, Flags{Type: "domain", Domain: "google.pt", Port: []int{1}}},
-		{[]string{"--t", "domain", "-p", "1", "google.pt"}, Flags{Type: "domain", Domain: "google.pt", Port: []int{1}}},
-		{[]string{"--t=domain", "-p", "1", "google.pt"}, Flags{Type: "domain", Domain: "google.pt", Port: []int{1}}},
-		{[]string{"--t=domain", "-p", "1", "google.pt"}, Flags{Type: "domain", Domain: "google.pt", Port: []int{1}}},
-		{[]string{"--t=domain", "-p", "1-5", "google.pt"}, Flags{Type: "domain", Domain: "google.pt", Port: []int{1, 2, 3, 4, 5}}},
-		{[]string{"--t=domain", "-p", "1-5", "-w", "a.txt", "google.pt"}, Flags{Type: "domain", WordList: "a.txt", Domain: "google.pt", Port: []int{1, 2, 3, 4, 5}}},
-		{[]string{"--t=domain", "-p", "1-5", "-w", "a.txt", "google.pt"}, Flags{Type: "domain", WordList: "a.txt", Domain: "google.pt", Port: []int{1, 2, 3, 4, 5}}},
-		{[]string{"--t=domain", "-p", "1,3,4", "-w", "a.txt", "google.pt"}, Flags{Type: "domain", WordList: "a.txt", Domain: "google.pt", Port: []int{1, 3, 4}}},
+		{[]string{"-t", "domain", "-p", "1", "google.pt"}, Flags{Type: "domain", Format: "text", Domain: "google.pt", Port: []int{1}}},
+		{[]string{"--t", "domain", "-p", "1", "google.pt"}, Flags{Type: "domain", Format: "text", Domain: "google.pt", Port: []int{1}}},
+		{[]string{"--t=domain", "-p", "1", "google.pt"}, Flags{Type: "domain", Format: "text", Domain: "google.pt", Port: []int{1}}},
+		{[]string{"--t=domain", "-p", "1", "google.pt"}, Flags{Type: "domain", Format: "text", Domain: "google.pt", Port: []int{1}}},
+		{[]string{"--t=domain", "-p", "1-5", "google.pt"}, Flags{Type: "domain", Format: "text", Domain: "google.pt", Port: []int{1, 2, 3, 4, 5}}},
+		{[]string{"--t=domain", "-p", "1-5", "-w", "a.txt", "google.pt"}, Flags{Type: "domain", WordList: "a.txt", Format: "text", Domain: "google.pt", Port: []int{1, 2, 3, 4, 5}}},
+		{[]string{"--t=domain", "-p", "1-5", "-w", "a.txt", "google.pt"}, Flags{Type: "domain", WordList: "a.txt", Format: "text", Domain: "google.pt", Port: []int{1, 2, 3, 4, 5}}},
+		{[]string{"--t=domain", "-p", "1,3,4", "-w", "a.txt", "google.pt"}, Flags{Type: "domain", WordList: "a.txt", Format: "text", Domain: "google.pt", Port: []int{1, 3, 4}}},
 	}
 
 	for _, table := range tables {

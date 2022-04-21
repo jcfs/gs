@@ -15,8 +15,11 @@ var scannerMap = map[string]Scanner{
 	TypeDomain: &DomainScanner{},
 }
 
+type Result interface {
+}
+
 type Scanner interface {
-	Scan(flags utils.Flags, wg *sync.WaitGroup)
+	Scan(flags utils.Flags, wg *sync.WaitGroup) Result
 }
 
 // NewScanner Creates a new scan based on the command line flags

@@ -14,7 +14,7 @@ import (
 
 type DomainScanner struct{}
 
-func (scanner *DomainScanner) Scan(flags utils.Flags, wg *sync.WaitGroup) {
+func (scanner *DomainScanner) Scan(flags utils.Flags, wg *sync.WaitGroup) Result {
 	if flags.WordList != "" {
 		if file, err := os.Open(flags.WordList); err == nil {
 			defer file.Close()
@@ -33,6 +33,8 @@ func (scanner *DomainScanner) Scan(flags utils.Flags, wg *sync.WaitGroup) {
 			resolve(s, flags.Domain, flags.Verbose, wg)
 		}
 	}
+
+	return nil
 }
 
 func resolve(subdomain string, addr string, printerr bool, wg *sync.WaitGroup) {
