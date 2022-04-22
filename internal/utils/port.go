@@ -5827,6 +5827,15 @@ const (
 	DomainNotFound        = "not found"
 )
 
+func GetColorByStatus(status string) string {
+	switch status {
+	case PortOpen:
+		return "\033[32m"
+	default:
+		return "\033[31m"
+	}
+}
+
 func GetCommonPorts() []int {
 	var result []int
 	for k := range PortNames {
