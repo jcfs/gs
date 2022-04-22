@@ -1,4 +1,4 @@
-build: test
+build:
 	cd cmd/gs/; go build -o ../../bin/gs .
 
 test:

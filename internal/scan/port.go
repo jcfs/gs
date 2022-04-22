@@ -23,14 +23,14 @@ type PortScanResult struct {
 func (scanner *PortScanner) Scan(flags utils.Flags, wg *sync.WaitGroup) Result {
 	var (
 		chwg       sync.WaitGroup
-		ch         = utils.Chunks(flags.Port, 250)
+		portChunks = utils.Chunks(flags.Port, 250)
 		statusChan = make(chan PortStatus)
 		resultChan = make(chan PortScanResult)
 		done       = make(chan int)
 	)
 
 	go output(statusChan, resultChan, done, wg)
-	for _, chunk := range ch {
+	for _, chunk := range portChunks {
 		for _, port := range chunk {
 			scan(flags.Domain, port, statusChan, &chwg)
 		}
@@ -41,16 +41,14 @@ func (scanner *PortScanner) Scan(flags utils.Flags, wg *sync.WaitGroup) Result {
 	return <-resultChan
 }
 
+//scan async connect scan to a single port
 func scan(host string, port int, result chan PortStatus, chwg *sync.WaitGroup) {
 	chwg.Add(1)
 	go func() {
 		d := net.Dialer{Timeout: time.Duration(1000) * time.Millisecond}
-		if _, err := d.Dial("tcp", fmt.Sprintf("%s:%d", host, port)); err != nil {
-			chwg.Done()
-			return
+		if _, err := d.Dial("tcp", fmt.Sprintf("%s:%d", host, port)); err == nil {
+			result <- PortStatus{Port: port, Status: utils.Open}
 		}
-
-		result <- PortStatus{Port: port, Status: utils.Open}
 		chwg.Done()
 	}()
 }

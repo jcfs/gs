@@ -7,18 +7,18 @@ A fast and lightweight scanner
 </p>
 
 <p align="center">
-<img align="center" width="598" alt="image" src="https://user-images.githubusercontent.com/1512601/164565360-8f4963b8-42fe-4a66-afac-182defc5472e.png">
+<img width="598" alt="image" src="https://user-images.githubusercontent.com/1512601/164565360-8f4963b8-42fe-4a66-afac-182defc5472e.png">
 </p>
 
 <hr/>
 
-### Description
+# Description
 **GS** is aims to be a fast and lightweight scanner (of several types; port/domain enum). **GS** intends to be a simple tool
 that can be used on automated scripts and checks; it is possible to get the output formatted as json/xml to ease integration
-with existing tooling
+with existing tooling.
 
-### Installation
-As of now, the only way to install **GS** is from source, so the repo must be cloned and the code compiled. In the future I intend to have multi-arch binary releases avaible
+# Installation
+As of now, the only way to install **GS** is from source, so the repo must be cloned and the code compiled. In the future I intend to have multi-arch binary releases available.
 
 ```
 $ git clone https://github.com/jcfs/gs ; cd gs
@@ -26,8 +26,8 @@ $ make
 $ make install
 ```
 
-### Usage
-
+# Usage
+Full option list can be found by running the command `gs` without any arguments:
 ```
 Usage: gs [options...] <host>
  -t, --type      <type>  The scan type (domain, port, ...)
