@@ -42,7 +42,7 @@ PORT:
  -p, --port      <ports> The port(s) to scan (ex: "1", "1-10", "1,2,3")
  ```
 #### General
-There are two types of scan currently implemented, the port scan and the subdomain enumeration scan. The port scan will 
+There are two types of scans currently implemented, the port scan and the subdomain enumeration scan. The port scan will 
 do a connect-scan to the specified ports on the target host. The domain enumeration scan will enumerate all the valid 
 subdomains of a given domain based on an argument or file list.
 

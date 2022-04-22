@@ -26,7 +26,7 @@ func main() {
 	}
 
 	var wg sync.WaitGroup
-	fmt.Printf("Starting scanning [%s] at %v\n", flags.Type, time.Now().Format("2006-02-01 15:04:05"))
+	fmt.Printf("Starting scanning [%s: %s] at %v\n", flags.Type, flags.Domain, time.Now().Format("2006-02-01 15:04:05"))
 	result := scanner.Scan(flags, &wg)
 	reporter := report.NewReporter(flags)
 	reporter.Report(result)

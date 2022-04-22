@@ -1,5 +1,10 @@
 package utils
 
+const (
+	flagPrefix    = "-"
+	flagSeparator = "="
+)
+
 //Chunks splits the xs slice into a slice of slices sized chunkSize
 func Chunks(xs []int, chunkSize int) [][]int {
 	if len(xs) == 0 {

@@ -27,6 +27,5 @@ func NewScanner(flags utils.Flags) Scanner {
 	if scanner, found := scannerMap[flags.Type]; found {
 		return scanner
 	}
-
 	return nil
 }
