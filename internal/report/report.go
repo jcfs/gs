@@ -115,5 +115,4 @@ func getColorByStatus(status string) string {
 	default:
 		return "\033[31m"
 	}
-
 }
