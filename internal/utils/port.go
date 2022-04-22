@@ -5817,9 +5817,14 @@ var PortNames = map[int]string{
 }
 
 const (
-	Open     string = "open"
-	Closed          = "closed"
-	Filtered        = "filtered"
+	PortOpen     string = "open"
+	PortClosed          = "closed"
+	PortFiltered        = "filtered"
+)
+
+const (
+	DomainFound    string = "found"
+	DomainNotFound        = "not found"
 )
 
 func GetCommonPorts() []int {

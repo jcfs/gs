@@ -47,7 +47,9 @@ func scan(host string, port int, result chan PortStatus, chwg *sync.WaitGroup) {
 	go func() {
 		d := net.Dialer{Timeout: time.Duration(1000) * time.Millisecond}
 		if _, err := d.Dial("tcp", fmt.Sprintf("%s:%d", host, port)); err == nil {
-			result <- PortStatus{Port: port, Status: utils.Open}
+			result <- PortStatus{Port: port, Status: utils.PortOpen}
+		} else {
+			result <- PortStatus{Port: port, Status: utils.PortClosed}
 		}
 		chwg.Done()
 	}()

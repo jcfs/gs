@@ -1,44 +1,26 @@
 package utils
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
 
-const (
-	prefix    = "-"
-	separator = "="
-)
-
-//Flags name definition
+//Flags parameters
 type Flags struct {
-	Type      string
-	Verbose   bool
-	Domain    string
-	Subdomain string
-	WordList  string
-	Format    string
-	Port      []int
-}
-
-func (c Flags) String() string {
-	return fmt.Sprintf("[%v %v %v %v %v %v %v]", c.Type, c.Verbose, c.Domain, c.Subdomain, c.WordList, c.Format, c.Port)
+	Type      string //the type of scan
+	Verbose   bool   //verbosity
+	Domain    string //domain to scan
+	Subdomain string //subdomain list to search
+	WordList  string //the list of words to search subdomains
+	Format    string //the output format
+	Port      []int  //the ports to scan
 }
 
 func Parse(args []string) Flags {
 	var result Flags
 
-	extractString := func(s string) string {
-		return s
-	}
-
-	isPresent := func(s string) bool {
-		return true
-	}
-
 	parseArg(args, []string{"type", "t"}, true, &result.Type, extractString, "port")
-	parseArg(args, []string{"verbose", "v"}, false, &result.Verbose, isPresent, false)
+	parseArg(args, []string{"verbose", "v"}, false, &result.Verbose, extractBool, false)
 	parseArg(args, []string{"subdomain", "s"}, true, &result.Subdomain, extractString, "")
 	parseArg(args, []string{"wordlist", "w"}, true, &result.WordList, extractString, "")
 	parseArg(args, []string{"port", "p"}, true, &result.Port, parseScanPortFlags, GetCommonPorts())
@@ -56,12 +38,12 @@ func parseArg[T any](args []string, names []string, keyValue bool, ref *T, extra
 	for _, n := range names {
 		for i, a := range args {
 			// we only care about option keys here
-			if len(a) <= 1 || !strings.HasPrefix(a, prefix) {
+			if len(a) <= 1 || !strings.HasPrefix(a, flagPrefix) {
 				continue
 			}
 
-			trim := TrimPrefix(a, prefix)
-			if cut, v, found := strings.Cut(trim, separator); cut == n {
+			trim := TrimPrefix(a, flagPrefix)
+			if cut, v, found := strings.Cut(trim, flagSeparator); cut == n {
 				var value string
 
 				if found {
@@ -103,4 +85,12 @@ func parseScanPortFlags(ports string) []int {
 	}
 
 	return portSlice
+}
+
+func extractString(s string) string {
+	return s
+}
+
+func extractBool(s string) bool {
+	return true
 }
