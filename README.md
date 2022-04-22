@@ -11,8 +11,7 @@ A fast and lightweight scanner
 </p>
 
 <hr/>
-<img alt="image" src="https://github.com/jcfs/gs/actions/workflows/build.yml/badge.svg">
-<img alt="image" src="https://github.com/jcfs/gs/actions/workflows/test.yml/badge.svg">
+<img alt="image" src="https://github.com/jcfs/gs/actions/workflows/build.yml/badge.svg"><img alt="image" src="https://github.com/jcfs/gs/actions/workflows/test.yml/badge.svg">
 
 **GS** is aims to be a fast and lightweight scanner (of several types; port/domain enum). **GS** intends to be a simple tool
 that can be used on automated scripts and checks; it is possible to get the output formatted as json/xml to ease integration
