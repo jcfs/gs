@@ -19,6 +19,7 @@ func TestParse(t *testing.T) {
 		{[]string{"--t=domain", "-p", "1-5", "-w", "a.txt", "google.pt"}, Flags{Type: "domain", WordList: "a.txt", Format: "text", Domain: "google.pt", Port: []int{1, 2, 3, 4, 5}}},
 		{[]string{"--t=domain", "-p", "1,3,4", "-w", "a.txt", "google.pt"}, Flags{Type: "domain", WordList: "a.txt", Format: "text", Domain: "google.pt", Port: []int{1, 3, 4}}},
 		{[]string{"--t=domain", "-p", "1,3,4-7,20", "-w", "a.txt", "google.pt"}, Flags{Type: "domain", WordList: "a.txt", Format: "text", Domain: "google.pt", Port: []int{1, 3, 4, 5, 6, 7, 20}}},
+		{[]string{"--t=domain", "-p", "1,3,4-7,20", "-o", "file.txt", "google.pt"}, Flags{Type: "domain", FileOutput: "file.txt", Format: "text", Domain: "google.pt", Port: []int{1, 3, 4, 5, 6, 7, 20}}},
 	}
 
 	for _, table := range tables {

@@ -41,7 +41,7 @@ func (scanner *DomainScanner) Scan(flags utils.Flags, wg *sync.WaitGroup) Result
 			defer file.Close()
 			scanner := bufio.NewScanner(file)
 			for scanner.Scan() {
-				resolve(scanner.Text(), flags.Domain, flags.Verbose, &chwg, statusChan)
+				resolve(scanner.Text(), flags.Domain, &chwg, statusChan)
 			}
 		} else {
 			log.Fatal(err)
@@ -51,7 +51,7 @@ func (scanner *DomainScanner) Scan(flags utils.Flags, wg *sync.WaitGroup) Result
 	if flags.Subdomain != "" {
 		// single subdomain is filled
 		for _, s := range strings.Split(flags.Subdomain, ",") {
-			resolve(s, flags.Domain, flags.Verbose, &chwg, statusChan)
+			resolve(s, flags.Domain, &chwg, statusChan)
 		}
 	}
 
@@ -60,7 +60,7 @@ func (scanner *DomainScanner) Scan(flags utils.Flags, wg *sync.WaitGroup) Result
 	return <-resultChan
 }
 
-func resolve(subdomain string, addr string, printerr bool, chwg *sync.WaitGroup, statusChan chan SubdomainStatus) {
+func resolve(subdomain string, addr string, chwg *sync.WaitGroup, statusChan chan SubdomainStatus) {
 	chwg.Add(1)
 	go func() {
 		domain := fmt.Sprintf("%s.%s", subdomain, addr)

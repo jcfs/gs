@@ -4,8 +4,5 @@ build:
 test:
 	go test ./...	
 
-run:
-	go run coscanner/pkg
-
 clean:
 	rm -rf bin/*

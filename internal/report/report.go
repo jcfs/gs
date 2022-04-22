@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"gs/internal/scan"
 	"gs/internal/utils"
+	"io"
+	"os"
 )
 
 type Reporter interface {
@@ -19,58 +21,63 @@ const (
 	domainScanLineFormat   = "%26s%11s%17s\n"
 )
 
-type PortScanTextReporter struct {
+type BaseReporter struct {
 	flags utils.Flags
+	w     io.Writer
+}
+
+type PortScanTextReporter struct {
+	BaseReporter
 }
 
 type DomainScanTextReporter struct {
-	flags utils.Flags
+	BaseReporter
 }
 
 type JsonReporter struct {
-	flags utils.Flags
+	BaseReporter
 }
 
 type XmlReporter struct {
-	flags utils.Flags
+	BaseReporter
 }
 
 func (r PortScanTextReporter) Report(result scan.Result) {
 	scanResult := result.(scan.PortScanResult)
 
-	fmt.Printf(portScanHeaderFormat, "Port", "Status", "Service")
-	fmt.Printf(portScanHeaderFormat, "------", "------", "-------------------")
+	write(r.w, portScanHeaderFormat, "Port", "Status", "Service")
+	write(r.w, portScanHeaderFormat, "------", "------", "-------------------")
 	for _, v := range scanResult.Ports {
-		color := getColorByStatus(v.Status)
+		color := utils.GetColorByStatus(v.Status)
 
 		if r.flags.Verbose && v.Status != utils.PortOpen {
-			fmt.Printf(portScanLineFormat, v.Port, color, v.Status, utils.GetPortDescription(v.Port))
+			write(r.w, portScanLineFormat, v.Port, color, v.Status, utils.GetPortDescription(v.Port))
 		}
 
 		if v.Status == utils.PortOpen {
-			fmt.Printf(portScanLineFormat, v.Port, color, v.Status, utils.GetPortDescription(v.Port))
+			write(r.w, portScanLineFormat, v.Port, color, v.Status, utils.GetPortDescription(v.Port))
 		}
 
 	}
-	fmt.Printf("\nScanned %d ports in %.2fs.\n", len(scanResult.Ports), scanResult.Elapsed)
+	write(r.w, "\nScanned %d ports in %.2fs.\n", len(scanResult.Ports), scanResult.Elapsed)
 }
 
 func (r DomainScanTextReporter) Report(result scan.Result) {
 	scanResult := result.(scan.DomainScanResult)
 
-	fmt.Printf(domainScanHeaderFormat, "Domain", "Status", "Service")
-	fmt.Printf(domainScanHeaderFormat, "-------------------------", "----------", "----------------")
+	write(r.w, domainScanHeaderFormat, "Domain", "Status", "Service")
+	write(r.w, domainScanHeaderFormat, "-------------------------", "----------", "----------------")
 	for _, v := range scanResult.Subdomains {
 		if r.flags.Verbose && v.Status != utils.DomainFound {
-			fmt.Printf(domainScanLineFormat, v.Subdomain, v.Status, v.Ip)
+			write(r.w, domainScanLineFormat, v.Subdomain, v.Status, v.Ip)
 		}
 
 		if v.Status == utils.DomainFound {
-			fmt.Printf(domainScanLineFormat, v.Subdomain, v.Status, v.Ip)
+			write(r.w, domainScanLineFormat, v.Subdomain, v.Status, v.Ip)
 		}
 
 	}
-	fmt.Printf("\nScanned %d domains in %.2fs.\n", len(scanResult.Subdomains), scanResult.Elapsed)
+	write(r.w, "\nScanned %d domains in %.2fs.\n", len(scanResult.Subdomains), scanResult.Elapsed)
 }
 
 func (r JsonReporter) Report(result scan.Result) {
@@ -79,7 +86,7 @@ func (r JsonReporter) Report(result scan.Result) {
 		return
 	}
 
-	fmt.Println(string(marshal))
+	write(r.w, string(marshal))
 }
 
 func (r XmlReporter) Report(result scan.Result) {
@@ -88,31 +95,41 @@ func (r XmlReporter) Report(result scan.Result) {
 		return
 	}
 
-	fmt.Println(string(marshal))
+	write(r.w, string(marshal))
 }
 
 func NewReporter(flags utils.Flags) Reporter {
+	var writer io.Writer = os.Stdout
+
+	if flags.FileOutput != "" {
+		if open, err := os.OpenFile(flags.FileOutput, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0600); err == nil {
+			writer = open
+		} else {
+			fmt.Println(err)
+		}
+	}
+
+	baseReporter := BaseReporter{w: writer, flags: flags}
+
 	switch flags.Format {
 	case "json":
-		return JsonReporter{flags: flags}
+		return JsonReporter{baseReporter}
 	case "xml":
-		return XmlReporter{flags: flags}
+		return XmlReporter{baseReporter}
 	default:
 		if flags.Type == scan.TypePort {
-			return PortScanTextReporter{flags: flags}
+			return PortScanTextReporter{baseReporter}
 		} else if flags.Type == scan.TypeDomain {
-			return DomainScanTextReporter{flags: flags}
+			return DomainScanTextReporter{baseReporter}
 		}
 	}
 
 	return nil
 }
 
-func getColorByStatus(status string) string {
-	switch status {
-	case utils.PortOpen:
-		return "\033[32m"
-	default:
-		return "\033[31m"
+func write(w io.Writer, format string, args ...any) {
+	_, err := fmt.Fprintf(w, format, args...)
+	if err != nil {
+		return
 	}
 }

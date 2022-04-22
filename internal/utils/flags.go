@@ -7,13 +7,14 @@ import (
 
 //Flags parameters
 type Flags struct {
-	Type      string //the type of scan
-	Verbose   bool   //verbosity
-	Domain    string //domain to scan
-	Subdomain string //subdomain list to search
-	WordList  string //the list of words to search subdomains
-	Format    string //the output format
-	Port      []int  //the ports to scan
+	Type       string //the type of scan
+	Verbose    bool   //verbosity
+	Domain     string //domain to scan
+	Subdomain  string //subdomain list to search
+	WordList   string //the list of words to search subdomains
+	Format     string //the output format
+	Port       []int  //the ports to scan
+	FileOutput string //the file to write the output to
 }
 
 func Parse(args []string) Flags {
@@ -25,6 +26,7 @@ func Parse(args []string) Flags {
 	parseArg(args, []string{"wordlist", "w"}, true, &result.WordList, extractString, "")
 	parseArg(args, []string{"port", "p"}, true, &result.Port, parseScanPortFlags, GetCommonPorts())
 	parseArg(args, []string{"format", "f"}, true, &result.Format, extractString, "text")
+	parseArg(args, []string{"output", "o"}, true, &result.FileOutput, extractString, "")
 
 	// assume the last element of the args list is always the domain
 	if len(args) > 0 {

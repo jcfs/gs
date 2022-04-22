@@ -11,10 +11,7 @@ import (
 	"time"
 )
 
-const banner = "GScanner 0.0.1 (https://github.com/jcfs/gs)\n\n"
-
 func main() {
-
 	flags := utils.Parse(os.Args[1:])
 	if err := common.Validate(flags); err != nil {
 		os.Exit(1)
@@ -27,8 +24,7 @@ func main() {
 
 	var wg sync.WaitGroup
 	fmt.Printf("Starting scanning [%s: %s] at %v\n", flags.Type, flags.Domain, time.Now().Format("2006-02-01 15:04:05"))
-	result := scanner.Scan(flags, &wg)
 	reporter := report.NewReporter(flags)
-	reporter.Report(result)
+	reporter.Report(scanner.Scan(flags, &wg))
 	wg.Wait()
 }
